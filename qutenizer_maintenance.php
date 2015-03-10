@@ -81,7 +81,7 @@ class QutenizeRInit {
         $generated_header_row_1 = "###############################################";
         $generated_header_row_2 = " ###                                       ### ";
         $generated_header_row_3 = "  ###   QutenizeR Plugin for WordPRess    ###  ";
-        $generated_header_row_4 = "  ###    2013     by #dweius     enjoy!   ###  ";
+        $generated_header_row_4 = "  ###  2013·2015   by @dweius    enjoy!   ###  ";
         
         $generated_header = $generated_header_row_1 . PHP_EOL . $generated_header_row_2 . PHP_EOL .
         			$generated_header_row_3 .PHP_EOL . $generated_header_row_2 .PHP_EOL . $generated_header_row_4 .PHP_EOL .
@@ -92,13 +92,13 @@ class QutenizeRInit {
 				
 		  //*** we continue with options
 			
-			update_option ( 'qutenizer_version', '0.1.0' );
+			update_option ( 'qutenizer_version', '0.2.0' );
 
-			update_option( 'qutenizer_shape',  'social' );
+			update_option( 'qutenizer_shape',  'tears' );
 			update_option( 'qutenizer_color_type',  'duet' );
-			update_option( 'qutenizer_color_one',  'B32712');
-			update_option( 'qutenizer_color_two',  'EB8D2F');
-			update_option( 'qutenizer_color_three',  '37759E');
+			update_option( 'qutenizer_color_one',  '5E19FF');
+			update_option( 'qutenizer_color_two',  'FFA136');
+			update_option( 'qutenizer_color_three',  'FF42AD');
 			
 			update_option( 'qutenizer_post_direct',  'on' );
 									

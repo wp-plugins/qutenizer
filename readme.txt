@@ -2,9 +2,9 @@
 Contributors: dweius
 Donate link: http://dweius.com/projects/contribute/
 Tags: qr, qr code, image generator, media library, cute, qr upload media, qrcode, qr code generator, qrcode generator, qr code shortcode, qrcode, barcode, qr scan, qr image, visual qr code, color qr code
-Requires at least: 3.6.1
-Tested up to: 3.7.1
-Stable tag: 0.1.0
+Requires at least: 4.1.1
+Tested up to: 4.1.1
+Stable tag: 0.2.0
 License: GPLv2 or later
 
 QutenizeR plugin for WordPress is a funny way to easily create cute & colorful QR codes.
@@ -16,7 +16,7 @@ QutenizeR plugin for WordPress is a funny way to easily create cute & colorful Q
 QutenizeR plugin for WordPress connects to it and get the images without leaving your blog's admin pages. Feedback will be welcome. 
 Enjoy this plugin!
 
-This plugin uses Jan Odv&aacute;rko's JSColor available at http://jscolor.com
+This plugin uses Jan Odvárko's JSColor available at http://jscolor.com
 
 == Installation ==
 
@@ -57,11 +57,12 @@ If the 'www.QutenizeR.com' text line doesn't fit into your proyect, a mention ab
 
 == Changelog ==
 
+= 0.2.0 =
+* New updated version - stable release.
 = 0.1.0 =
 * The starter version - beta release.
 
 == Upgrade Notice ==
 
-= 0.1.0 =
- The starter version - try it!
-
+= 0.2.0 =
+  Stable version - try it!

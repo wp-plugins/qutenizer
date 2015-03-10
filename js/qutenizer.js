@@ -40,7 +40,7 @@ jQuery(document).ready(function(){
 			 }).done(function(qtzr_response){ 
 				var _qtzr_response = qtzr_response.split(";");
 				if(_qtzr_response[0] == 'OK'){
-						document.getElementById('qtzr_image').src = _qtzr_response[1];					
+						document.getElementById('qtzr_image').src = _qtzr_response[1];
 				 }else{
 						qtzr_message_show(_qtzr_response[1]);	
 				 } 
@@ -68,7 +68,7 @@ jQuery(document).ready(function(){
 			 }).done(function(qtzr_response){ 
 				var _qtzr_response = qtzr_response.split(";");
 				if(_qtzr_response[0] == 'OK'){
-						document.getElementById('qtzr_image').src = _qtzr_response[1];
+						document.getElementById('qtzr_image').src =  _qtzr_response[1]; 
 						qtzr_message_show('Image loaded to Media Libray');				
 				 }else{
 						qtzr_message_show(_qtzr_response[1]);	

@@ -4,7 +4,7 @@
 	Plugin URI: http://qutenizer.com 
 	Description: QutenizeR plugin for WordPress is a funny way to easy create cute & colorful QR codes.
 	Author: Dweius 
-	Version: 0.1.0 
+	Version: 0.2.0 
 	Author URI: http://dweius.com
 	License: GPLv2 or later
 */  
@@ -160,7 +160,7 @@ function qtzr_generate_callback(){
 				
 				$g_dtime = date("Y-m-d H:i:s");
 			
-				$g_data = $g_shape.','. $g_colors.','. $g_kolors . ',' . $g_text;
+				$g_data = 'Text: ' . $g_text;
 			
 				$g_text = $g_dtime . ' ' . $image_name . ' ' . $g_data . PHP_EOL;
 			
@@ -261,9 +261,9 @@ function qtzr_get_last_post_generated($g_pid){
 			
 		foreach($qtzr_images_a as &$qtzr_image){
 									
-			$aux_name = $qtzr_image -> post_name;
+			$aux_name = $qtzr_image -> post_title;
 					
-			if(substr($aux_name,0,4) === 'qtzr'){
+			if(substr($aux_name,0,9) === 'QutenizeR'){
 						
 				$qtzr_aux_pos_a = explode("-",$aux_name);
 						
@@ -407,17 +407,17 @@ function qtzr_post_generate(){
 			
 			file_put_contents($generated_textfile, $g_text, FILE_APPEND);
 			
-			$qtzr_last_image_id;
-			
-			$qtzr_last_image_c = -1;
+			$qtzr_last_image_c = 0;
 			
 			$qtzr_images_a = get_attached_media( 'image', $g_pid );
 			
+			if(isset($qtzr_images_a) &&  $qtzr_images_a !== null){
+			
 			foreach($qtzr_images_a as &$qtzr_image){
 									
-					$aux_name = $qtzr_image -> post_name;
+					$aux_name = $qtzr_image -> post_title;
 					
-					if(substr($aux_name,0,4) === 'qtzr'){
+					if(substr($aux_name,0,9) === 'QutenizeR'){
 						
 						$qtzr_aux_pos_a = explode("-",$aux_name);
 						
@@ -427,25 +427,28 @@ function qtzr_post_generate(){
 					
 							$qtzr_aux_c = intval($qtzr_aux_pos);
 	
-						if( $qtzr_aux_c > $qtzr_last_image_c){
+							if( $qtzr_aux_c > $qtzr_last_image_c){
 							
-							$qtzr_last_image_c = $qtzr_aux_c;	
-						}			
+								$qtzr_last_image_c = $qtzr_aux_c;	
+							}			
+						}
 					}
-				}
-			}	
-						
+				}	
+			
+			}
+		
 			$g_lim_i = $qtzr_last_image_c + 1;
 			
 			$g_title_s_san = preg_replace('/[^a-zA-Z0-9\']/', '_', get_the_title($g_pid) );
 			
 			$g_title_s = str_replace("'", '', $g_title_s_san);
+			
+			$i_name = 'qtzr-' . $g_lim_i . '-' . substr( $g_title_s, 0, 24 ) . '-' . substr($image_name,0, 7);
+			$g_loaded = import_quenizer_image($url_generated, $g_pid, $image_name, $g_lim_i);
 
-			$g_loaded = media_sideload_image( $url_generated . $image_name, $g_pid , 'qtzr-' . $g_lim_i . '-' . substr( $g_title_s, 0, 24 ) . '-' . substr($image_name,0, 7));
-			
-			$demi_g_loaded = substr($g_loaded, stripos($g_loaded, "src='") + strlen("src='"),  stripos($g_loaded, "'", stripos($g_loaded, "src='") + strlen("src='") + 1) - (stripos($g_loaded, "src='") + strlen("src='")));
-			
-			echo 'OK;'.$demi_g_loaded;
+			$demi_g_loaded = wp_get_attachment_image_src($g_loaded)[0];			
+	
+			echo 'OK;' .$demi_g_loaded;
 			
 			die();
 			
@@ -484,9 +487,9 @@ function qutenizer_admin_menu() {
 	$page = add_submenu_page( 'options-general.php', // The parent page of this menu
                               __( 'QutenizeR', 'qutenizer' ), // The Menu Title
                               __( 'QutenizeR', 'qutenizer' ), // The Page title
-              						'manage_options', // The capability required for access to this item
-              						'qutenizer-options', // the slug to use for the page in the URL
-                              'qutenizer_manager' // The function to call to render the page
+              			'manage_options', // The capability required for access to this item
+              			'qutenizer-options', // the slug to use for the page in the URL
+                             	'qutenizer_manager' // The function to call to render the page
                            	);
                            	
    add_action('admin_print_scripts-' . $page, 'qutenizer_admin_scripts');
@@ -536,4 +539,48 @@ function qutenizer_admin_options() {
 	wp_register_script( 'qutenizer-jscolor-script', plugins_url( 'jscolor/jscolor.js',  __FILE__ )  );
 	
 }
+
+function import_quenizer_image( $url_generated, $postid, $image_name_d, $image_no) {
+
+	$post = get_post( $postid );
+	if( empty( $post ) )
+		return false;
+
+	if( !class_exists( 'WP_Http' ) )
+	  include_once( ABSPATH . WPINC. '/class-http.php' );
+
+	$photo = new WP_Http();
+	$photo = $photo->request( $url_generated . $image_name_d );
+	if( $photo['response']['code'] != 200 )
+		return false;
+
+	$attachment = wp_upload_bits( 'QutenizeR.png', null, $photo['body'], date("Y-m", strtotime( $photo['headers']['last-modified'] ) ) );
+	if( !empty( $attachment['error'] ) )
+		return false;
+
+	$filetype = wp_check_filetype( basename( $attachment['file'] ), null );
+
+	$postinfo = array(
+		'post_mime_type'	=> $filetype['type'],
+		'post_title'		=> ' QutenizeR image -' . $image_no . '- ' . $post->post_title,
+		'post_content'		=> '',
+		'post_status'		=> 'inherit',
+	);
+	$filename = $attachment['file'];
+	$attach_id = wp_insert_attachment( $postinfo, $filename, $postid );
+
+	if( !function_exists( 'wp_generate_attachment_data' ) )
+		require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+	$attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
+	wp_update_attachment_metadata( $attach_id,  $attach_data );
+	return $attach_id;
+}
+function qutenizer_settings_link($links) { 
+  $settings_link = '<a href="options-general.php?page=qutenizer-options">' . __( "Settings", "qutenizer" ) . '</a>'; 
+  array_unshift($links, $settings_link); 
+  return $links; 
+}
+ 
+$plugin = plugin_basename(__FILE__); 
+add_filter("plugin_action_links_$plugin", 'qutenizer_settings_link' );
 ?>
